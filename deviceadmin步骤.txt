@@ -1,0 +1,45 @@
+1.创建 MyAdmin 的广播接受者 继承 DeviceAdminReceiver
+
+		<receiver android:name=".MyAdmin">
+			<meta-data android:name="android.app.device_admin"
+				android:resource="@xml/my_admin" />
+			<intent-filter>
+				<action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+			</intent-filter>
+		</receiver>
+
+
+my_admin.xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<device-admin xmlns:android="http://schemas.android.com/apk/res/android">
+        <uses-policies>
+                <limit-password />
+                <watch-login />
+                <reset-password />
+                <force-lock />
+                <wipe-data />
+        </uses-policies>
+</device-admin>
+
+2.获取IDevicePolicyManager
+
+
+
+Method method = Class.forName("android.os.ServiceManager")
+					.getMethod("getService", String.class);
+IBinder binder = (IBinder) method.invoke(null,
+					new Object[] { Context.DEVICE_POLICY_SERVICE });
+mService = IDevicePolicyManager.Stub.asInterface(binder);
+
+3.注册广播接受者为admin设备
+ComponentName mAdminName = new ComponentName(this, MyAdmin.class);
+if (mService != null) {
+		if (!mService.isAdminActive(mAdminName)) {
+					Intent intent = new Intent(
+					DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+					intent.putExtra				(DevicePolicyManager.EXTRA_DEVICE_ADMIN,
+							mAdminName);
+					startActivity(intent);
+				}
+}
