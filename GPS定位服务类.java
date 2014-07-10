@@ -37,8 +37,7 @@ public class GPSInfoProvider {
 	
 	// 获取gps 信息 
 	public String getLocation(){
-	//获取系统服务需要用到Context,比如manager之类
-		manager =(LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+			manager =(LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 		//manager.getAllProviders(); // gps //wifi //
 		String provider = getProvider(manager);
 		// 注册位置的监听器 
